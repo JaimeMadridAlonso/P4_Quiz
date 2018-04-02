@@ -122,7 +122,7 @@ exports.editCmd = (rl, id) => {
 
 
 exports.creditsCmd = rl => {
-	console.log("Autor de la práctica.");
-    console.log("JAIME");
+	console.log("Autores de la práctica: ");
+    console.log("Jaime Madrid Alonso");
     rl.prompt();
 };
