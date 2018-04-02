@@ -78,10 +78,18 @@ exports.testCmd = (rl, id) => {
     }   
 };
 
-exports.playCmd = rl => {
-	
-log('Jugar.', 'red');
-rl.prompt();
+exports.playCmd = rl => {	
+	let score = 0; //preguntas que has ido acertando
+	let toBeResolved = []; //array donde guardo los ids de las preguntas q existen
+	toBeResolved.length = model.count(); //longitud del array del tamaño del numero de preguntas
+	let numPreg = toBeResolved.length;
+	for(let i=0; i<toBeResolved.length; i++){
+		toBeResolved[i]=i;
+	}
+	if(numPreg === 0){
+		log("No hay preguntas disponibles");
+		rl.prompt();
+	}
 };
 
 exports.deleteCmd = (rl, id) => {
