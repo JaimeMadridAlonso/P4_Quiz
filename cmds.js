@@ -81,15 +81,37 @@ exports.testCmd = (rl, id) => {
 exports.playCmd = rl => {	
 	let score = 0; //preguntas que has ido acertando
 	let toBeResolved = []; //array donde guardo los ids de las preguntas q existen
-	toBeResolved.length = model.count(); //longitud del array del tamaño del numero de preguntas
-	let numPreg = toBeResolved.length;
-	for(let i=0; i<toBeResolved.length; i++){
-		toBeResolved[i]=i;
+	let tamaño = model.getAll(); 
+	for(let i=0; i<tamaño.length; i++){
+		toBeResolved.push(i);
 	}
-	if(numPreg === 0){
+
+	const playOne = () =>{
+	if(toBeResolved.length === 0){
 		log("No hay preguntas disponibles");
+		log(`Tu score es '${score}'`);
 		rl.prompt();
-	}
+	}else{
+		let randomId = Math.floor(Math.random() * toBeResolved.length); //coges un id al azar teniendo en cuenta el num aciertos q lleves
+		let quiz = tamaño[randomId];
+		log(quiz.question);
+		rl.question('Respuesta: ',answer => {
+			if (answer === quiz.answer ){
+				score=score+1;
+				log(`CORRECTO - Lleva '${score}' aciertos.`);
+				toBeResolved.splice(randomId, 1);
+				playOne();
+			}else{
+				log("INCORRECTO.");
+				log(`Fin del juego. Aciertos: '${score}'`);
+				rl.prompt();
+			}
+
+	});
+}
+
+}
+playOne();
 };
 
 exports.deleteCmd = (rl, id) => {
