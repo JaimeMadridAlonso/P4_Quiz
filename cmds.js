@@ -1,7 +1,8 @@
-//const readline = require("readline");
+const readline = require("readline");
 const {log, biglog, errorlog, colorize} = require("./out");
 const {models} = require("./model");
 const Sequelize = require('sequelize');
+const net = require("net");
 
 //Muestra la ayuda
 exports.helpCmd = (socket, rl) => {
@@ -234,7 +235,7 @@ exports.editCmd = (socket, rl, id) => {
 
 
 exports.creditsCmd = (socket, rl) => {
-	console.log(socket, "Autores de la práctica: ");
-    console.log(socket, "JAIME");
+	log(socket, 'Autores de la práctica: ');
+    log(socket, 'JAIME');
     rl.prompt();
 };
