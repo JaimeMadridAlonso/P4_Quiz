@@ -235,6 +235,6 @@ exports.editCmd = (socket, rl, id) => {
 
 exports.creditsCmd = (socket, rl) => {
 	console.log(socket, "Autores de la práctica: ");
-    console.log(socket, "Jaime Madrid Alonso");
+    console.log(socket, "JAIME");
     rl.prompt();
 };
