@@ -1,4 +1,4 @@
-const readline = require("readline");
+//const readline = require("readline");
 const {log, biglog, errorlog, colorize} = require("./out");
 const {models} = require("./model");
 const Sequelize = require('sequelize');
@@ -35,9 +35,9 @@ const makeQuestion = (socket, rl, text) => {
 
 
 exports.addCmd = (socket, rl) => {
-    makeQuestion (rl, 'Introduzca una pregunta: ')
+    makeQuestion (socket, rl, 'Introduzca una pregunta: ')
     .then(q => { //parametro la pregunta q metes
-        return makeQuestion(rl, 'Introduzca la respuesta: ')
+        return makeQuestion(socket, rl, 'Introduzca la respuesta: ')
         .then( a =>{ //parametro la respuesta q metes
             return {question: q, answer: a};
         });
@@ -46,11 +46,11 @@ exports.addCmd = (socket, rl) => {
         return models.quiz.create(quiz); //creas la quiz con q y a
     })
     .then((quiz) => {    
-        log(` ${colorize('Se han añadido', 'magenta')}: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`);
+        log(socket, ` ${colorize('Se han añadido', 'magenta')}: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`);
     })
     .catch(Sequelize.ValidationError, error => {
         errorlog(socket, 'El quiz es erroneo:');
-        error.errors.forEach(({message}) => errorlog(message));
+        error.errors.forEach(({message}) => errorlog(socket, message));
     })
     .catch(error => {
         errorlog(socket, error.message);
@@ -114,7 +114,7 @@ validateId(id) //valido el id
         if (!quiz) { 
             throw new Error (`No existe un quiz asociado al id=${id}.`);
         }
-        makeQuestion(rl, quiz.question)
+        makeQuestion(socket, rl, quiz.question)
         .then( a => {
                 if(quiz.answer === a){
                     log(socket, 'Su respuesta es correcta.');
@@ -127,7 +127,7 @@ validateId(id) //valido el id
         })
         .catch(Sequelize.ValidationError, error => {
         errorlog(socket, "El quiz es erróneo: ");
-        error.errors.forEach(({ message }) => errorlog(message));
+        error.errors.forEach(({ message }) => errorlog(socket, message));
         })
         .catch(error => {
             errorlog(socket, error.message);
@@ -160,7 +160,7 @@ exports.playCmd = (socket, rl) => {
             }else{
             let randomId = Math.floor(Math.random() * toBeResolved.length);
             let quiz = toBeResolved[randomId];
-            makeQuestion(rl, quiz.question)
+            makeQuestion(socket, rl, quiz.question)
             .then (answer => {
                 if (answer === quiz.answer){
                 score=score+1;
@@ -203,10 +203,10 @@ exports.editCmd = (socket, rl, id) => {
             throw new Error (`No existe un quiz asociado al id=${id}.`);
         }
         process.stdout.isTTY && setTimeout(() => {rl.write(quiz.question)}, 0);
-        return makeQuestion(rl, 'Introduzca la pregunta: ') 
+        return makeQuestion(socket, rl, 'Introduzca la pregunta: ') 
         .then (q => {
             process.stdout.isTTY && setTimeout (() => {rl.write(quiz.answer)}, 0);
-            return makeQuestion(rl, 'Introduzca la respuesta: ') 
+            return makeQuestion(socket, rl, 'Introduzca la respuesta: ') 
             .then (a => {
                 quiz.question = q;
                 quiz.answer = a;
